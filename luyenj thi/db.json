@@ -1,0 +1,44 @@
+{
+  "products": [
+    {
+      "id": "2",
+      "name": "Quần nỉ 2025",
+      "quantity": 45,
+      "imageUrl": "https://product.hstatic.net/200000690725/product/1919f653-adbf-4171-9302-8e857c103d59_bce4a23d192f430e8be21361859e674f_master.jpg",
+      "category": "Quần",
+      "price": 200000
+    },
+    {
+      "id": "7758",
+      "name": "gsgs",
+      "price": "123",
+      "quantity": "12",
+      "imageUrl": "https://bizweb.dktcdn.net/100/446/974/products/ao-thun-mlb-new-era-heavy-cotton-new-york-yankees-black-13086578-1.jpg?v=1691318321487",
+      "category": "ao"
+    },
+    {
+      "id": "5193",
+      "name": "gsgs",
+      "price": "1231",
+      "quantity": "12",
+      "imageUrl": "https://bizweb.dktcdn.net/100/446/974/products/ao-thun-mlb-new-era-heavy-cotton-new-york-yankees-black-13086578-1.jpg?v=1691318321487",
+      "category": "quan"
+    },
+    {
+      "name": "Dat123456",
+      "price": "1223",
+      "quantity": "12",
+      "imageUrl": "",
+      "category": "quan",
+      "id": "511c"
+    }
+  ],
+  "users": [
+    {
+      "email": "admin@gmail.com",
+      "password": "$2a$10$0PGbJ7CqHLY0V7MYJs.6euXWbIB.TsBW/1CjE1B54eOLMfhI7a7eq",
+      "name": "admin",
+      "id": "1"
+    }
+  ]
+}

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Todo List App - Quản lý công việc</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: "#3B82F6",
+                            secondary: "#8B5CF6",
+                            accent: "#F59E0B",
+                            success: "#10B981",
+                            danger: "#EF4444",
+                            warning: "#F59E0B",
+                        },
+                        animation: {
+                            "fade-in": "fadeIn 0.3s ease-in-out",
+                            "slide-in": "slideIn 0.3s ease-out",
+                            "bounce-in": "bounceIn 0.5s ease-out",
+                        },
+                        keyframes: {
+                            fadeIn: {
+                                "0%": { opacity: "0" },
+                                "100%": { opacity: "1" },
+                            },
+                            slideIn: {
+                                "0%": { transform: "translateY(-10px)", opacity: "0" },
+                                "100%": { transform: "translateY(0)", opacity: "1" },
+                            },
+                            bounceIn: {
+                                "0%": { transform: "scale(0.3)", opacity: "0" },
+                                "50%": { transform: "scale(1.05)" },
+                                "70%": { transform: "scale(0.9)" },
+                                "100%": { transform: "scale(1)", opacity: "1" },
+                            },
+                        },
+                    },
+                },
+            };
+        </script>
+    </head>
+    <body class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen font-sans">
+        <!-- Header -->
+        <header class="bg-white shadow-lg sticky top-0 z-50 backdrop-blur-md bg-white/90">
+            <div class="container mx-auto px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <!-- Logo -->
+                    <div class="flex items-center space-x-3">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-r from-primary to-secondary rounded-xl flex items-center justify-center shadow-lg"
+                        >
+                            <svg
+                                class="w-6 h-6 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                                ></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-800">Todo List</h1>
+                            <p class="text-sm text-gray-600">Quản lý công việc hiệu quả</p>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="hidden md:flex items-center space-x-6">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-primary" id="total-todos">0</div>
+                            <div class="text-xs text-gray-600">Tổng cộng</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-warning" id="active-todos">0</div>
+                            <div class="text-xs text-gray-600">Chưa hoàn thành</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-success" id="completed-todos">
+                                0
+                            </div>
+                            <div class="text-xs text-gray-600">Đã hoàn thành</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-6 py-8">
+            <!-- Add Todo Form -->
+            <div class="max-w-2xl mx-auto mb-8">
+                <div class="bg-white rounded-2xl shadow-lg p-6 animate-fade-in">
+                    <form id="todo-form" class="flex flex-col sm:flex-row gap-4">
+                        <div class="flex-1">
+                            <input
+                                type="text"
+                                id="todo-input"
+                                placeholder="Nhập công việc mới..."
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 text-lg"
+                                required
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            class="bg-gradient-to-r from-primary to-secondary text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center space-x-2"
+                        >
+                            <svg
+                                class="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                ></path>
+                            </svg>
+                            <span>Thêm</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="max-w-2xl mx-auto mb-6">
+                <div class="flex flex-wrap justify-center gap-2">
+                    <button
+                        id="filter-all"
+                        class="filter-btn active px-6 py-2 rounded-lg font-medium transition-all duration-300 bg-primary text-white shadow-lg"
+                    >
+                        Tất cả
+                    </button>
+                    <button
+                        id="filter-active"
+                        class="filter-btn px-6 py-2 rounded-lg font-medium transition-all duration-300 bg-white text-gray-600 hover:bg-gray-50 shadow-md"
+                    >
+                        Chưa hoàn thành
+                    </button>
+                    <button
+                        id="filter-completed"
+                        class="filter-btn px-6 py-2 rounded-lg font-medium transition-all duration-300 bg-white text-gray-600 hover:bg-gray-50 shadow-md"
+                    >
+                        Đã hoàn thành
+                    </button>
+                </div>
+            </div>
+
+            <!-- Todo List -->
+            <div class="max-w-2xl mx-auto">
+                <div id="todo-list" class="space-y-3">
+                    <!-- Todos will be dynamically added here -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-state" class="text-center py-12 hidden">
+                    <div
+                        class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
+                    >
+                        <svg
+                            class="w-12 h-12 text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                            ></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-600 mb-2">Chưa có công việc nào</h3>
+                    <p class="text-gray-500">Hãy thêm công việc đầu tiên của bạn!</p>
+                </div>
+            </div>
+
+            <!-- Clear Completed Button -->
+            <div class="max-w-2xl mx-auto mt-6 text-center">
+                <button
+                    id="clear-completed"
+                    class="bg-gradient-to-r from-danger to-red-600 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 hidden"
+                >
+                    Xóa tất cả đã hoàn thành
+                </button>
+            </div>
+        </main>
+
+        <!-- Edit Modal -->
+        <div
+            id="edit-modal"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+        >
+            <div class="bg-white rounded-2xl p-6 w-full max-w-md mx-4 animate-bounce-in">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Chỉnh sửa công việc</h3>
+                <form id="edit-form">
+                    <input
+                        type="text"
+                        id="edit-input"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 mb-4"
+                        required
+                    />
+                    <div class="flex space-x-3">
+                        <button
+                            type="submit"
+                            class="flex-1 bg-gradient-to-r from-primary to-secondary text-white py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-300"
+                        >
+                            Lưu
+                        </button>
+                        <button
+                            type="button"
+                            id="cancel-edit"
+                            class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-400 transition-all duration-300"
+                        >
+                            Hủy
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Success Toast -->
+        <div
+            id="success-toast"
+            class="fixed top-4 right-4 bg-success text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300"
+        >
+            <div class="flex items-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                    ></path>
+                </svg>
+                <span id="toast-message">Thành công!</span>
+            </div>
+        </div>
+
+        <script>
+            // Todo App Class
+            class TodoApp {
+                constructor() {
+                    this.todos = this.loadTodos();
+                    this.currentFilter = "all";
+                    this.editingId = null;
+                    this.init();
+                }
+
+                init() {
+                    this.bindEvents();
+                    this.render();
+                    this.updateStats();
+                }
+
+                bindEvents() {
+                    // Form submission
+                    document.getElementById("todo-form").addEventListener("submit", (e) => {
+                        e.preventDefault();
+                        this.addTodo();
+                    });
+
+                    // Filter buttons
+                    document.querySelectorAll(".filter-btn").forEach((btn) => {
+                        btn.addEventListener("click", (e) => {
+                            this.setFilter(e.target.id.replace("filter-", ""));
+                        });
+                    });
+
+                    // Clear completed
+                    document.getElementById("clear-completed").addEventListener("click", () => {
+                        this.clearCompleted();
+                    });
+
+                    // Edit modal
+                    document.getElementById("cancel-edit").addEventListener("click", () => {
+                        this.closeEditModal();
+                    });
+
+                    document.getElementById("edit-form").addEventListener("submit", (e) => {
+                        e.preventDefault();
+                        this.saveEdit();
+                    });
+
+                    // Close modal on backdrop click
+                    document.getElementById("edit-modal").addEventListener("click", (e) => {
+                        if (e.target.id === "edit-modal") {
+                            this.closeEditModal();
+                        }
+                    });
+                }
+
+                addTodo() {
+                    const input = document.getElementById("todo-input");
+                    const text = input.value.trim();
+
+                    if (text) {
+                        const todo = {
+                            id: Date.now(),
+                            text: text,
+                            completed: false,
+                            createdAt: new Date().toISOString(),
+                        };
+
+                        this.todos.unshift(todo);
+                        this.saveTodos();
+                        this.render();
+                        this.updateStats();
+                        input.value = "";
+                        this.showToast("Đã thêm công việc mới!");
+                    }
+                }
+
+                toggleTodo(id) {
+                    const todo = this.todos.find((t) => t.id === id);
+                    if (todo) {
+                        todo.completed = !todo.completed;
+                        this.saveTodos();
+                        this.render();
+                        this.updateStats();
+                        this.showToast(todo.completed ? "Đã hoàn thành!" : "Đã hủy hoàn thành!");
+                    }
+                }
+
+                deleteTodo(id) {
+                    if (confirm("Bạn có chắc chắn muốn xóa công việc này?")) {
+                        this.todos = this.todos.filter((t) => t.id !== id);
+                        this.saveTodos();
+                        this.render();
+                        this.updateStats();
+                        this.showToast("Đã xóa công việc!");
+                    }
+                }
+
+                editTodo(id) {
+                    const todo = this.todos.find((t) => t.id === id);
+                    if (todo) {
+                        this.editingId = id;
+                        document.getElementById("edit-input").value = todo.text;
+                        document.getElementById("edit-modal").classList.remove("hidden");
+                        document.getElementById("edit-input").focus();
+                    }
+                }
+
+                saveEdit() {
+                    const text = document.getElementById("edit-input").value.trim();
+                    if (text && this.editingId) {
+                        const todo = this.todos.find((t) => t.id === this.editingId);
+                        if (todo) {
+                            todo.text = text;
+                            this.saveTodos();
+                            this.render();
+                            this.closeEditModal();
+                            this.showToast("Đã cập nhật công việc!");
+                        }
+                    }
+                }
+
+                closeEditModal() {
+                    this.editingId = null;
+                    document.getElementById("edit-modal").classList.add("hidden");
+                    document.getElementById("edit-input").value = "";
+                }
+
+                setFilter(filter) {
+                    this.currentFilter = filter;
+
+                    // Update filter buttons
+                    document.querySelectorAll(".filter-btn").forEach((btn) => {
+                        btn.classList.remove("active", "bg-primary", "text-white", "shadow-lg");
+                        btn.classList.add("bg-white", "text-gray-600", "shadow-md");
+                    });
+
+                    const activeBtn = document.getElementById(`filter-${filter}`);
+                    activeBtn.classList.add("active", "bg-primary", "text-white", "shadow-lg");
+                    activeBtn.classList.remove("bg-white", "text-gray-600", "shadow-md");
+
+                    this.render();
+                }
+
+                clearCompleted() {
+                    if (confirm("Bạn có chắc chắn muốn xóa tất cả công việc đã hoàn thành?")) {
+                        this.todos = this.todos.filter((t) => !t.completed);
+                        this.saveTodos();
+                        this.render();
+                        this.updateStats();
+                        this.showToast("Đã xóa tất cả công việc đã hoàn thành!");
+                    }
+                }
+
+                getFilteredTodos() {
+                    switch (this.currentFilter) {
+                        case "active":
+                            return this.todos.filter((t) => !t.completed);
+                        case "completed":
+                            return this.todos.filter((t) => t.completed);
+                        default:
+                            return this.todos;
+                    }
+                }
+
+                render() {
+                    const todoList = document.getElementById("todo-list");
+                    const emptyState = document.getElementById("empty-state");
+                    const clearCompletedBtn = document.getElementById("clear-completed");
+                    const filteredTodos = this.getFilteredTodos();
+
+                    // Show/hide clear completed button
+                    const hasCompleted = this.todos.some((t) => t.completed);
+                    clearCompletedBtn.classList.toggle("hidden", !hasCompleted);
+
+                    if (filteredTodos.length === 0) {
+                        todoList.innerHTML = "";
+                        emptyState.classList.remove("hidden");
+                    } else {
+                        emptyState.classList.add("hidden");
+                        todoList.innerHTML = filteredTodos
+                            .map((todo) => this.createTodoHTML(todo))
+                            .join("");
+                    }
+                }
+
+                createTodoHTML(todo) {
+                    const isCompleted = todo.completed;
+                    const createdAt = new Date(todo.createdAt).toLocaleDateString("vi-VN");
+
+                    return `
+                    <div class="todo-item bg-white rounded-lg shadow-md p-4 animate-slide-in ${
+                        isCompleted ? "opacity-75" : ""
+                    }" data-id="${todo.id}">
+                        <div class="flex items-center space-x-3">
+                            <button
+                                onclick="todoApp.toggleTodo(${todo.id})"
+                                class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
+                                    isCompleted
+                                        ? "bg-success border-success text-white"
+                                        : "border-gray-300 hover:border-primary"
+                                }"
+                            >
+                                ${
+                                    isCompleted
+                                        ? `
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                `
+                                        : ""
+                                }
+                            </button>
+                            
+                            <div class="flex-1 min-w-0">
+                                <p class="text-gray-800 ${
+                                    isCompleted ? "line-through text-gray-500" : ""
+                                }">${this.escapeHtml(todo.text)}</p>
+                                <p class="text-xs text-gray-500 mt-1">Tạo lúc: ${createdAt}</p>
+                            </div>
+                            
+                            <div class="flex items-center space-x-2">
+                                <button
+                                    onclick="todoApp.editTodo(${todo.id})"
+                                    class="p-2 text-gray-400 hover:text-primary transition-colors duration-300"
+                                    title="Chỉnh sửa"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                </button>
+                                
+                                <button
+                                    onclick="todoApp.deleteTodo(${todo.id})"
+                                    class="p-2 text-gray-400 hover:text-danger transition-colors duration-300"
+                                    title="Xóa"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                }
+
+                updateStats() {
+                    const total = this.todos.length;
+                    const completed = this.todos.filter((t) => t.completed).length;
+                    const active = total - completed;
+
+                    document.getElementById("total-todos").textContent = total;
+                    document.getElementById("active-todos").textContent = active;
+                    document.getElementById("completed-todos").textContent = completed;
+                }
+
+                showToast(message) {
+                    const toast = document.getElementById("success-toast");
+                    const messageEl = document.getElementById("toast-message");
+
+                    messageEl.textContent = message;
+                    toast.classList.remove("translate-x-full");
+
+                    setTimeout(() => {
+                        toast.classList.add("translate-x-full");
+                    }, 3000);
+                }
+
+                escapeHtml(text) {
+                    const div = document.createElement("div");
+                    div.textContent = text;
+                    return div.innerHTML;
+                }
+
+                saveTodos() {
+                    localStorage.setItem("todos", JSON.stringify(this.todos));
+                }
+
+                loadTodos() {
+                    const saved = localStorage.getItem("todos");
+                    return saved ? JSON.parse(saved) : [];
+                }
+            }
+
+            // Initialize the app
+            const todoApp = new TodoApp();
+
+            // Add some sample todos if none exist
+            if (todoApp.todos.length === 0) {
+                const sampleTodos = [
+                    {
+                        id: 1,
+                        text: "Học TailwindCSS",
+                        completed: false,
+                        createdAt: new Date().toISOString(),
+                    },
+                    {
+                        id: 2,
+                        text: "Tạo ứng dụng Todo List",
+                        completed: true,
+                        createdAt: new Date().toISOString(),
+                    },
+                    {
+                        id: 3,
+                        text: "Thực hành JavaScript",
+                        completed: false,
+                        createdAt: new Date().toISOString(),
+                    },
+                ];
+                todoApp.todos = sampleTodos;
+                todoApp.saveTodos();
+                todoApp.render();
+                todoApp.updateStats();
+            }
+        </script>
+    </body>
+</html>
+
+<script>
+    class ConVat {
+        constructor(ten, keu) {
+            console.log(`${ten} đang ahihi ${keu}`);
+        }
+        keu() {
+            console.log("Con vật đang kêu");
+        }
+    }
+
+    const conMeo = new ConVat("Con mèo", "meomeo");
+
+    function conVat(ten, keu) {
+        console.log(`${ten} đang ${keu}`);
+    }
+    conVat("Con mèo", "meomeo");
+</script>

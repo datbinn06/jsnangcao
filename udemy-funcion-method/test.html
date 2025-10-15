@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>All Events Demo</title>
+</head>
+<body>
+
+<button id="btn">Test sự kiện</button>
+<input type="text" id="inputBox" placeholder="Nhập chữ ở đây">
+
+<script>
+const btn = document.getElementById("btn");
+const inputBox = document.getElementById("inputBox");
+
+// ================== Mouse Events ==================
+function clickEvent() {
+  console.log("click");
+}
+function dblclickEvent() {
+  console.log("dblclick");
+}
+function rightClick(e) {
+  e.preventDefault();
+  console.log("contextmenu (chuột phải)");
+}
+function hover() {
+  console.log("mouseover (chuột vào)");
+}
+function leave() {
+  console.log("mouseout (chuột ra)");
+}
+function move() {
+  console.log("mousemove (chuột di chuyển)");
+}
+function down() {
+  console.log("mousedown (nhấn giữ chuột)");
+}
+function up() {
+  console.log("mouseup (thả chuột)");
+}
+
+btn.addEventListener("click", clickEvent);
+btn.addEventListener("dblclick", dblclickEvent);
+btn.addEventListener("contextmenu", rightClick);
+btn.addEventListener("mouseover", hover);
+btn.addEventListener("mouseout", leave);
+btn.addEventListener("mousemove", move);
+btn.addEventListener("mousedown", down);
+btn.addEventListener("mouseup", up);
+
+
+// ================== Keyboard Events ==================
+function keyDown(e) {
+  console.log("keydown:", e.key);
+}
+function keyUp(e) {
+  console.log("keyup:", e.key);
+}
+function keyPress(e) {
+  console.log("keypress:", e.key);
+}
+
+inputBox.addEventListener("keydown", keyDown);
+inputBox.addEventListener("keyup", keyUp);
+inputBox.addEventListener("keypress", keyPress);
+
+
+// ================== Form/Input Events ==================
+function inputEvent() {
+  console.log("input (đang gõ)");
+}
+function changeEvent() {
+  console.log("change (giá trị thay đổi)");
+}
+function focusEvent() {
+  console.log("focus (ô nhập được chọn)");
+}
+function blurEvent() {
+  console.log("blur (rời khỏi ô nhập)");
+}
+
+inputBox.addEventListener("input", inputEvent);
+inputBox.addEventListener("change", changeEvent);
+inputBox.addEventListener("focus", focusEvent);
+inputBox.addEventListener("blur", blurEvent);
+
+
+// ================== Window/Document Events ==================
+function pageLoaded() {
+  console.log("window load (toàn bộ tải xong)");
+}
+function domReady() {
+  console.log("DOMContentLoaded (HTML sẵn sàng)");
+}
+function resizeEvent() {
+  console.log("resize cửa sổ");
+}
+function scrollEvent() {
+  console.log("scroll trang");
+}
+function beforeLeave() {
+  console.log("beforeunload (trước khi thoát)");
+}
+
+window.addEventListener("load", pageLoaded);
+document.addEventListener("DOMContentLoaded", domReady);
+window.addEventListener("resize", resizeEvent);
+window.addEventListener("scroll", scrollEvent);
+window.addEventListener("beforeunload", beforeLeave);
+
+</script>
+</body>
+</html>
