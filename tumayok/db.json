@@ -2,14 +2,25 @@
   "products": [
     {
       "id": 1,
-      "name": "Sản phẩm A",
-      "price": 10000
+      "title": "Áo nỉ 2025",
+      "quantity": 30,
+      "imageUrl": "https://product.hstatic.net/200000690725/product/19334a78-6cbb-4bbb-abeb-31088b5578ff_ea4d8d95d7fe424297ad95179a26f18b_master.jpg",
+      "category": "Áo"
     },
     {
       "id": 2,
-      "name": "Sản phẩm B",
-      "price": 20000
+      "title": "Quần nỉ 2025",
+      "quantity": 45,
+      "imageUrl": "https://product.hstatic.net/200000690725/product/1919f653-adbf-4171-9302-8e857c103d59_bce4a23d192f430e8be21361859e674f_master.jpg",
+      "category": "Quần"
     }
   ],
-  "users": []
+  "users": [
+    {
+      "email": "datbinn06@gmail.com",
+      "password": "$2a$10$.yArLu57.Wlc/BsVZQTZ2exAmPeOzzTVb4KGfIj5SDbOCocQAs.wC",
+      "username": "Datthanh",
+      "id": 1
+    }
+  ]
 }
